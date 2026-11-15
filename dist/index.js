@@ -19,3 +19,4 @@ __exportStar(require("./schema/iam"), exports);
 __exportStar(require("./schema/product"), exports);
 __exportStar(require("./schema/inventory"), exports);
 __exportStar(require("./schema/sales"), exports);
+__exportStar(require("./schema/purchase"), exports);
