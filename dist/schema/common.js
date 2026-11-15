@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ApiErrorSchema = exports.ErrorCodeSchema = exports.pageResult = exports.PageQuerySchema = exports.MoneySchema = exports.IdSchema = void 0;
+exports.ApiErrorSchema = exports.ErrorCodeSchema = exports.pageResult = exports.PageQueryParamsSchema = exports.PageQuerySchema = exports.MoneySchema = exports.IdSchema = void 0;
 const zod_1 = require("zod");
 exports.IdSchema = zod_1.z.string().uuid();
 /** 金额以最小货币单位（分）表示，禁止浮点数 */
@@ -11,6 +11,11 @@ exports.MoneySchema = zod_1.z.object({
 exports.PageQuerySchema = zod_1.z.object({
     page: zod_1.z.number().int().positive().default(1),
     pageSize: zod_1.z.number().int().positive().max(200).default(20),
+});
+/** 供 @Query 使用：query 到 Nest 时是字符串，普通 z.number() 会拒收 */
+exports.PageQueryParamsSchema = zod_1.z.object({
+    page: zod_1.z.coerce.number().int().positive().default(1),
+    pageSize: zod_1.z.coerce.number().int().positive().max(200).default(20),
 });
 const pageResult = (item) => zod_1.z.object({
     items: zod_1.z.array(item),

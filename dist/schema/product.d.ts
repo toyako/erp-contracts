@@ -136,3 +136,18 @@ export declare const SkuPageSchema: z.ZodObject<{
     total: number;
 }>;
 export type SkuPage = z.infer<typeof SkuPageSchema>;
+/** SKU 编辑：只传要改的字段，编码与所属 SPU 不可改 */
+export declare const UpdateSkuRequestSchema: z.ZodObject<{
+    spec: z.ZodOptional<z.ZodString>;
+    unit: z.ZodOptional<z.ZodString>;
+    enabled: z.ZodOptional<z.ZodBoolean>;
+}, "strip", z.ZodTypeAny, {
+    enabled?: boolean | undefined;
+    spec?: string | undefined;
+    unit?: string | undefined;
+}, {
+    enabled?: boolean | undefined;
+    spec?: string | undefined;
+    unit?: string | undefined;
+}>;
+export type UpdateSkuRequest = z.infer<typeof UpdateSkuRequestSchema>;

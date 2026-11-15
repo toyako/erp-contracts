@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreatePurchaseOrderRequestSchema = exports.PurchaseOrderSchema = exports.PurchaseOrderLineSchema = exports.PurchaseOrderStatusSchema = exports.CreateSupplierRequestSchema = exports.SupplierSchema = void 0;
+exports.PurchaseOrderPageSchema = exports.CreatePurchaseOrderRequestSchema = exports.PurchaseOrderSchema = exports.PurchaseOrderLineSchema = exports.PURCHASE_ORDER_TRANSITIONS = exports.PurchaseOrderStatusSchema = exports.UpdateSupplierRequestSchema = exports.CreateSupplierRequestSchema = exports.SupplierSchema = void 0;
 const zod_1 = require("zod");
 const common_1 = require("./common");
 /** 供应商（采购上下文） */
@@ -21,8 +21,23 @@ exports.CreateSupplierRequestSchema = zod_1.z.object({
     phone: zod_1.z.string().optional(),
     rating: zod_1.z.number().int().min(1).max(5).default(3),
 });
+/** 供应商编辑：只传要改的字段，编码不可改 */
+exports.UpdateSupplierRequestSchema = zod_1.z.object({
+    name: zod_1.z.string().min(1).optional(),
+    contact: zod_1.z.string().optional(),
+    phone: zod_1.z.string().optional(),
+    rating: zod_1.z.number().int().min(1).max(5).optional(),
+    enabled: zod_1.z.boolean().optional(),
+});
 /** 采购订单：draft -> submitted -> received / cancelled */
 exports.PurchaseOrderStatusSchema = zod_1.z.enum(['draft', 'submitted', 'received', 'cancelled']);
+/** 显式状态机：终态不可回退，照抄销售订单的做法 */
+exports.PURCHASE_ORDER_TRANSITIONS = {
+    draft: ['submitted', 'cancelled'],
+    submitted: ['received', 'cancelled'],
+    received: [],
+    cancelled: [],
+};
 exports.PurchaseOrderLineSchema = zod_1.z.object({
     id: common_1.IdSchema,
     skuId: common_1.IdSchema,
@@ -48,3 +63,4 @@ exports.CreatePurchaseOrderRequestSchema = zod_1.z.object({
     }))
         .min(1, '至少一行明细'),
 });
+exports.PurchaseOrderPageSchema = (0, common_1.pageResult)(exports.PurchaseOrderSchema);

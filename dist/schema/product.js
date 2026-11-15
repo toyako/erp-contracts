@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SkuPageSchema = exports.PriceListSchema = exports.SkuSchema = exports.SpuSchema = void 0;
+exports.UpdateSkuRequestSchema = exports.SkuPageSchema = exports.PriceListSchema = exports.SkuSchema = exports.SpuSchema = void 0;
 const zod_1 = require("zod");
 const common_1 = require("./common");
 exports.SpuSchema = zod_1.z.object({
@@ -29,3 +29,9 @@ exports.PriceListSchema = zod_1.z.object({
     effectiveTo: zod_1.z.string().datetime().optional(),
 });
 exports.SkuPageSchema = (0, common_1.pageResult)(exports.SkuSchema);
+/** SKU 编辑：只传要改的字段，编码与所属 SPU 不可改 */
+exports.UpdateSkuRequestSchema = zod_1.z.object({
+    spec: zod_1.z.string().max(256).optional(),
+    unit: zod_1.z.string().min(1).max(32).optional(),
+    enabled: zod_1.z.boolean().optional(),
+});

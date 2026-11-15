@@ -24,6 +24,18 @@ export declare const PageQuerySchema: z.ZodObject<{
     pageSize?: number | undefined;
 }>;
 export type PageQuery = z.infer<typeof PageQuerySchema>;
+/** 供 @Query 使用：query 到 Nest 时是字符串，普通 z.number() 会拒收 */
+export declare const PageQueryParamsSchema: z.ZodObject<{
+    page: z.ZodDefault<z.ZodNumber>;
+    pageSize: z.ZodDefault<z.ZodNumber>;
+}, "strip", z.ZodTypeAny, {
+    page: number;
+    pageSize: number;
+}, {
+    page?: number | undefined;
+    pageSize?: number | undefined;
+}>;
+export type PageQueryParams = z.infer<typeof PageQueryParamsSchema>;
 export declare const pageResult: <T extends z.ZodTypeAny>(item: T) => z.ZodObject<{
     items: z.ZodArray<T, "many">;
     total: z.ZodNumber;
