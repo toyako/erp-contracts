@@ -16,6 +16,13 @@ export const PageQuerySchema = z.object({
 });
 export type PageQuery = z.infer<typeof PageQuerySchema>;
 
+/** 供 @Query 使用：query 到 Nest 时是字符串，普通 z.number() 会拒收 */
+export const PageQueryParamsSchema = z.object({
+  page: z.coerce.number().int().positive().default(1),
+  pageSize: z.coerce.number().int().positive().max(200).default(20),
+});
+export type PageQueryParams = z.infer<typeof PageQueryParamsSchema>;
+
 export const pageResult = <T extends z.ZodTypeAny>(item: T) =>
   z.object({
     items: z.array(item),

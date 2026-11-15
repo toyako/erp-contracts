@@ -34,3 +34,11 @@ export type PriceList = z.infer<typeof PriceListSchema>;
 
 export const SkuPageSchema = pageResult(SkuSchema);
 export type SkuPage = z.infer<typeof SkuPageSchema>;
+
+/** SKU 编辑：只传要改的字段，编码与所属 SPU 不可改 */
+export const UpdateSkuRequestSchema = z.object({
+  spec: z.string().max(256).optional(),
+  unit: z.string().min(1).max(32).optional(),
+  enabled: z.boolean().optional(),
+});
+export type UpdateSkuRequest = z.infer<typeof UpdateSkuRequestSchema>;

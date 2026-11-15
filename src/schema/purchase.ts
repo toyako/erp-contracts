@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { IdSchema, MoneySchema } from './common';
+import { IdSchema, MoneySchema, pageResult } from './common';
 
 /** 供应商（采购上下文） */
 export const SupplierSchema = z.object({
@@ -23,9 +23,27 @@ export const CreateSupplierRequestSchema = z.object({
 });
 export type CreateSupplierRequest = z.infer<typeof CreateSupplierRequestSchema>;
 
+/** 供应商编辑：只传要改的字段，编码不可改 */
+export const UpdateSupplierRequestSchema = z.object({
+  name: z.string().min(1).optional(),
+  contact: z.string().optional(),
+  phone: z.string().optional(),
+  rating: z.number().int().min(1).max(5).optional(),
+  enabled: z.boolean().optional(),
+});
+export type UpdateSupplierRequest = z.infer<typeof UpdateSupplierRequestSchema>;
+
 /** 采购订单：draft -> submitted -> received / cancelled */
 export const PurchaseOrderStatusSchema = z.enum(['draft', 'submitted', 'received', 'cancelled']);
 export type PurchaseOrderStatus = z.infer<typeof PurchaseOrderStatusSchema>;
+
+/** 显式状态机：终态不可回退，照抄销售订单的做法 */
+export const PURCHASE_ORDER_TRANSITIONS: Record<PurchaseOrderStatus, readonly PurchaseOrderStatus[]> = {
+  draft: ['submitted', 'cancelled'],
+  submitted: ['received', 'cancelled'],
+  received: [],
+  cancelled: [],
+};
 
 export const PurchaseOrderLineSchema = z.object({
   id: IdSchema,
@@ -59,3 +77,6 @@ export const CreatePurchaseOrderRequestSchema = z.object({
     .min(1, '至少一行明细'),
 });
 export type CreatePurchaseOrderRequest = z.infer<typeof CreatePurchaseOrderRequestSchema>;
+
+export const PurchaseOrderPageSchema = pageResult(PurchaseOrderSchema);
+export type PurchaseOrderPage = z.infer<typeof PurchaseOrderPageSchema>;
