@@ -25,6 +25,17 @@
 
 **按既定约定：外部平台操作由你执行或提供授权后再由我通过 API 驱动；AI 不擅自推代码、不反复重试网络。**
 
+### 🔴 前置：契约仓库可见性决定 CI 能否通过
+
+`erp-api` / `erp-admin` 的 CI 第一步要把契约仓库并列 clone 到 `../erp-contracts`。若 `erp-contracts` 是 **Private**，匿名 clone 会 403（实测首次 CI 即失败在 `Clone contracts` 这一步）。二选一：
+
+| 方案 | 操作 | 代价 |
+|---|---|---|
+| A（推荐） | `erp-contracts` 改为 Public：仓库 Settings → General → 最下方 Danger Zone → Change visibility | 代码公开（简历作品通常希望如此） |
+| B | 在 `erp-api` / `erp-admin` 配 Secret `CONTRACTS_TOKEN`（PAT，需 repo 读权限） | 需维护 PAT 有效期 |
+
+工作流已兼容两种：有 `CONTRACTS_TOKEN` 走 token clone，否则回退匿名 clone，无需再改代码。
+
 ### 自动化路径（推荐）
 
 `.github/workflows/deploy.yml` 已就位：GitHub 仓库 Settings → Secrets 配好以下值后，push 到 main 即自动部署两个静态站点；缺密钥的 job 会自动跳过，不会报错。
