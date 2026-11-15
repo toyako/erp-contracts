@@ -2,6 +2,25 @@
 
 > 🔴 **本仓库已按项目拆分为四个独立仓库**（2026-11-15）。下表是当前布局，部署命令以各仓库根目录为准。
 
+## 当前上线状态（2026-11-15）
+
+| 平台 | 状态 | 说明 |
+|---|---|---|
+| GitHub | ✅ 四仓已推送 | `erp-contracts` 已转 Public 以保证 CI 可匿名 clone |
+| Vercel | ✅ 已上线 | <https://erp-admin-eosin.vercel.app>，生产分支 `main`，提交 `630f957` |
+| Cloudflare Pages | ⏸ 待执行 | 需 `wrangler login` 后 `wrangler pages deploy src/renderer` |
+| Supabase | ⏸ 待执行 | 需 `supabase link` 后 `supabase db push` |
+
+### Vercel 实际踩到的三个坑（已修复，勿回退）
+
+| 现象 | 根因 | 修复 |
+|---|---|---|
+| `ERR_PNPM_OUTDATED_LOCKFILE` | CI 下 pnpm 默认 `--frozen-lockfile`，而 `sed` 改了 `package.json` 的 specifier | install 命令追加 `--no-frozen-lockfile` |
+| `Cannot find module 'zod'`（5 处，指向 `erp-contracts/src/**`） | `tsconfig` 的 `include: ["**/*.ts"]` 把项目内 clone 的契约副本一并编译 | `exclude` 增加 `erp-contracts` |
+| 上线后 `/api/auth/captcha` 404 | 模板登录页/用户信息仍请求后端接口 | 演示模式下登录与 `users/me` 走本地实现（`VITE_DEMO_FALLBACK`） |
+
+> 构建期 clone 契约仓库到项目内（`./erp-contracts`）并临时改写依赖路径，是 `file:` 依赖在无 monorepo 的托管平台上最省事的解法；仓库里的 `package.json` 保持 `file:../erp-contracts` 不动。
+
 ## 平台分工
 
 | 平台 | 部署内容 | 配置 | 是否需要后端 |
