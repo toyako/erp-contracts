@@ -1,0 +1,7 @@
+node_modules/
+*.tsbuildinfo
+*.log
+.DS_Store
+
+# dist 随仓库发布：消费方以 file:/github: 引用时无需再构建本包
+!dist/
