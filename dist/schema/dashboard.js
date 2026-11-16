@@ -80,7 +80,7 @@ exports.ReportSummarySchema = zod_1.z.object({
         stock: zod_1.z.number().int().nonnegative(),
     })),
 });
-exports.TodoTypeSchema = zod_1.z.enum(['order', 'warning', 'notice', 'rma', 'transfer', 'stocktake', 'purchase', 'shipment']);
+exports.TodoTypeSchema = zod_1.z.enum(['order', 'warning', 'notice', 'rma', 'transfer', 'stocktake', 'purchase', 'shipment', 'invoice']);
 exports.TodoItemSchema = zod_1.z.object({
     id: zod_1.z.string(),
     type: exports.TodoTypeSchema,
