@@ -4,6 +4,7 @@ export * from './schema/product';
 export * from './schema/inventory';
 export * from './schema/sales';
 export * from './schema/purchase';
+export * from './schema/purchase-receipt';
 export * from './schema/customer';
 export * from './schema/rma';
 export * from './schema/shipment';
