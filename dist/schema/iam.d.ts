@@ -123,3 +123,36 @@ export declare const PrincipalPageSchema: z.ZodObject<{
     total: number;
 }>;
 export type PrincipalPage = z.infer<typeof PrincipalPageSchema>;
+/** 新建用户：密码最短 6 位；角色至少一个 */
+export declare const CreatePrincipalRequestSchema: z.ZodObject<{
+    username: z.ZodString;
+    password: z.ZodString;
+    displayName: z.ZodString;
+    roles: z.ZodArray<z.ZodEnum<["admin", "sales", "readonly"]>, "many">;
+}, "strip", z.ZodTypeAny, {
+    username: string;
+    displayName: string;
+    roles: ("admin" | "sales" | "readonly")[];
+    password: string;
+}, {
+    username: string;
+    displayName: string;
+    roles: ("admin" | "sales" | "readonly")[];
+    password: string;
+}>;
+export type CreatePrincipalRequest = z.infer<typeof CreatePrincipalRequestSchema>;
+/** 改用户：姓名 / 角色 / 密码按需改，空改由服务端报 400；用户名不可改 */
+export declare const UpdatePrincipalRequestSchema: z.ZodObject<{
+    displayName: z.ZodOptional<z.ZodString>;
+    roles: z.ZodOptional<z.ZodArray<z.ZodEnum<["admin", "sales", "readonly"]>, "many">>;
+    password: z.ZodOptional<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    displayName?: string | undefined;
+    roles?: ("admin" | "sales" | "readonly")[] | undefined;
+    password?: string | undefined;
+}, {
+    displayName?: string | undefined;
+    roles?: ("admin" | "sales" | "readonly")[] | undefined;
+    password?: string | undefined;
+}>;
+export type UpdatePrincipalRequest = z.infer<typeof UpdatePrincipalRequestSchema>;

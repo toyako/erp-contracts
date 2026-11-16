@@ -273,11 +273,11 @@ export declare const ReportSummarySchema: z.ZodObject<{
     }[];
 }>;
 export type ReportSummary = z.infer<typeof ReportSummarySchema>;
-export declare const TodoTypeSchema: z.ZodEnum<["order", "warning", "notice", "rma", "transfer", "stocktake"]>;
+export declare const TodoTypeSchema: z.ZodEnum<["order", "warning", "notice", "rma", "transfer", "stocktake", "purchase"]>;
 export type TodoType = z.infer<typeof TodoTypeSchema>;
 export declare const TodoItemSchema: z.ZodObject<{
     id: z.ZodString;
-    type: z.ZodEnum<["order", "warning", "notice", "rma", "transfer", "stocktake"]>;
+    type: z.ZodEnum<["order", "warning", "notice", "rma", "transfer", "stocktake", "purchase"]>;
     typeLabel: z.ZodString;
     cls: z.ZodString;
     title: z.ZodString;
@@ -289,7 +289,7 @@ export declare const TodoItemSchema: z.ZodObject<{
     action: z.ZodString;
     to: z.ZodString;
 }, "strip", z.ZodTypeAny, {
-    type: "order" | "warning" | "notice" | "rma" | "transfer" | "stocktake";
+    type: "order" | "warning" | "notice" | "rma" | "transfer" | "stocktake" | "purchase";
     id: string;
     typeLabel: string;
     cls: string;
@@ -301,7 +301,7 @@ export declare const TodoItemSchema: z.ZodObject<{
     action: string;
     to: string;
 }, {
-    type: "order" | "warning" | "notice" | "rma" | "transfer" | "stocktake";
+    type: "order" | "warning" | "notice" | "rma" | "transfer" | "stocktake" | "purchase";
     id: string;
     typeLabel: string;
     cls: string;
@@ -318,17 +318,17 @@ export declare const TodoListQuerySchema: z.ZodObject<{
     page: z.ZodDefault<z.ZodNumber>;
     pageSize: z.ZodDefault<z.ZodNumber>;
 } & {
-    type: z.ZodOptional<z.ZodEnum<["order", "warning", "notice", "rma", "transfer", "stocktake"]>>;
+    type: z.ZodOptional<z.ZodEnum<["order", "warning", "notice", "rma", "transfer", "stocktake", "purchase"]>>;
     status: z.ZodOptional<z.ZodEnum<["pending", "done"]>>;
     keyword: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
     page: number;
     pageSize: number;
-    type?: "order" | "warning" | "notice" | "rma" | "transfer" | "stocktake" | undefined;
+    type?: "order" | "warning" | "notice" | "rma" | "transfer" | "stocktake" | "purchase" | undefined;
     status?: "done" | "pending" | undefined;
     keyword?: string | undefined;
 }, {
-    type?: "order" | "warning" | "notice" | "rma" | "transfer" | "stocktake" | undefined;
+    type?: "order" | "warning" | "notice" | "rma" | "transfer" | "stocktake" | "purchase" | undefined;
     status?: "done" | "pending" | undefined;
     page?: number | undefined;
     pageSize?: number | undefined;
@@ -338,7 +338,7 @@ export type TodoListQuery = z.infer<typeof TodoListQuerySchema>;
 export declare const TodoListPageSchema: z.ZodObject<{
     items: z.ZodArray<z.ZodObject<{
         id: z.ZodString;
-        type: z.ZodEnum<["order", "warning", "notice", "rma", "transfer", "stocktake"]>;
+        type: z.ZodEnum<["order", "warning", "notice", "rma", "transfer", "stocktake", "purchase"]>;
         typeLabel: z.ZodString;
         cls: z.ZodString;
         title: z.ZodString;
@@ -350,7 +350,7 @@ export declare const TodoListPageSchema: z.ZodObject<{
         action: z.ZodString;
         to: z.ZodString;
     }, "strip", z.ZodTypeAny, {
-        type: "order" | "warning" | "notice" | "rma" | "transfer" | "stocktake";
+        type: "order" | "warning" | "notice" | "rma" | "transfer" | "stocktake" | "purchase";
         id: string;
         typeLabel: string;
         cls: string;
@@ -362,7 +362,7 @@ export declare const TodoListPageSchema: z.ZodObject<{
         action: string;
         to: string;
     }, {
-        type: "order" | "warning" | "notice" | "rma" | "transfer" | "stocktake";
+        type: "order" | "warning" | "notice" | "rma" | "transfer" | "stocktake" | "purchase";
         id: string;
         typeLabel: string;
         cls: string;
@@ -381,7 +381,7 @@ export declare const TodoListPageSchema: z.ZodObject<{
     page: number;
     pageSize: number;
     items: {
-        type: "order" | "warning" | "notice" | "rma" | "transfer" | "stocktake";
+        type: "order" | "warning" | "notice" | "rma" | "transfer" | "stocktake" | "purchase";
         id: string;
         typeLabel: string;
         cls: string;
@@ -398,7 +398,7 @@ export declare const TodoListPageSchema: z.ZodObject<{
     page: number;
     pageSize: number;
     items: {
-        type: "order" | "warning" | "notice" | "rma" | "transfer" | "stocktake";
+        type: "order" | "warning" | "notice" | "rma" | "transfer" | "stocktake" | "purchase";
         id: string;
         typeLabel: string;
         cls: string;
@@ -521,6 +521,98 @@ export declare const ReceivablePageSchema: z.ZodObject<{
     total: number;
 }>;
 export type ReceivablePage = z.infer<typeof ReceivablePageSchema>;
+/** 应付行：由采购订单派生，与应收行同结构（单号为采购单号） */
+export declare const PayableRowSchema: z.ZodObject<{
+    id: z.ZodString;
+    orderNo: z.ZodString;
+    status: z.ZodEnum<["draft", "submitted", "received", "cancelled"]>;
+    amount: z.ZodNumber;
+    currency: z.ZodString;
+    settled: z.ZodNumber;
+    unsettled: z.ZodNumber;
+    createdAt: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    status: "received" | "draft" | "cancelled" | "submitted";
+    amount: number;
+    currency: string;
+    id: string;
+    createdAt: string;
+    orderNo: string;
+    settled: number;
+    unsettled: number;
+}, {
+    status: "received" | "draft" | "cancelled" | "submitted";
+    amount: number;
+    currency: string;
+    id: string;
+    createdAt: string;
+    orderNo: string;
+    settled: number;
+    unsettled: number;
+}>;
+export type PayableRow = z.infer<typeof PayableRowSchema>;
+export declare const PayablePageSchema: z.ZodObject<{
+    items: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        orderNo: z.ZodString;
+        status: z.ZodEnum<["draft", "submitted", "received", "cancelled"]>;
+        amount: z.ZodNumber;
+        currency: z.ZodString;
+        settled: z.ZodNumber;
+        unsettled: z.ZodNumber;
+        createdAt: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        status: "received" | "draft" | "cancelled" | "submitted";
+        amount: number;
+        currency: string;
+        id: string;
+        createdAt: string;
+        orderNo: string;
+        settled: number;
+        unsettled: number;
+    }, {
+        status: "received" | "draft" | "cancelled" | "submitted";
+        amount: number;
+        currency: string;
+        id: string;
+        createdAt: string;
+        orderNo: string;
+        settled: number;
+        unsettled: number;
+    }>, "many">;
+    total: z.ZodNumber;
+    page: z.ZodNumber;
+    pageSize: z.ZodNumber;
+}, "strip", z.ZodTypeAny, {
+    page: number;
+    pageSize: number;
+    items: {
+        status: "received" | "draft" | "cancelled" | "submitted";
+        amount: number;
+        currency: string;
+        id: string;
+        createdAt: string;
+        orderNo: string;
+        settled: number;
+        unsettled: number;
+    }[];
+    total: number;
+}, {
+    page: number;
+    pageSize: number;
+    items: {
+        status: "received" | "draft" | "cancelled" | "submitted";
+        amount: number;
+        currency: string;
+        id: string;
+        createdAt: string;
+        orderNo: string;
+        settled: number;
+        unsettled: number;
+    }[];
+    total: number;
+}>;
+export type PayablePage = z.infer<typeof PayablePageSchema>;
 export declare const RecentActivitySchema: z.ZodArray<z.ZodObject<{
     text: z.ZodString;
     meta: z.ZodString;

@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { pageResult, PageQueryParamsSchema } from './common';
+import { PurchaseOrderStatusSchema } from './purchase';
 import { OrderStatusSchema } from './sales';
 
 /**
@@ -102,7 +103,7 @@ export const ReportSummarySchema = z.object({
 });
 export type ReportSummary = z.infer<typeof ReportSummarySchema>;
 
-export const TodoTypeSchema = z.enum(['order', 'warning', 'notice', 'rma', 'transfer', 'stocktake']);
+export const TodoTypeSchema = z.enum(['order', 'warning', 'notice', 'rma', 'transfer', 'stocktake', 'purchase']);
 export type TodoType = z.infer<typeof TodoTypeSchema>;
 
 export const TodoItemSchema = z.object({
@@ -153,6 +154,22 @@ export type ReceivableRow = z.infer<typeof ReceivableRowSchema>;
 
 export const ReceivablePageSchema = pageResult(ReceivableRowSchema);
 export type ReceivablePage = z.infer<typeof ReceivablePageSchema>;
+
+/** 应付行：由采购订单派生，与应收行同结构（单号为采购单号） */
+export const PayableRowSchema = z.object({
+  id: z.string().uuid(),
+  orderNo: z.string(),
+  status: PurchaseOrderStatusSchema,
+  amount: z.number().int().nonnegative(),
+  currency: z.string().length(3),
+  settled: z.number().int().nonnegative(),
+  unsettled: z.number().int().nonnegative(),
+  createdAt: z.string(),
+});
+export type PayableRow = z.infer<typeof PayableRowSchema>;
+
+export const PayablePageSchema = pageResult(PayableRowSchema);
+export type PayablePage = z.infer<typeof PayablePageSchema>;
 
 export const RecentActivitySchema = z.array(
   z.object({

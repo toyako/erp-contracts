@@ -1,8 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MovementListPageSchema = exports.MovementListQuerySchema = exports.MovementRowSchema = exports.MovementTypeSchema = exports.RecentActivitySchema = exports.ReceivablePageSchema = exports.ReceivableRowSchema = exports.FinanceSummarySchema = exports.TodoListPageSchema = exports.TodoListQuerySchema = exports.TodoItemSchema = exports.TodoTypeSchema = exports.ReportSummarySchema = exports.OverviewSummarySchema = exports.ReportQuerySchema = exports.ReportRangeSchema = void 0;
+exports.MovementListPageSchema = exports.MovementListQuerySchema = exports.MovementRowSchema = exports.MovementTypeSchema = exports.RecentActivitySchema = exports.PayablePageSchema = exports.PayableRowSchema = exports.ReceivablePageSchema = exports.ReceivableRowSchema = exports.FinanceSummarySchema = exports.TodoListPageSchema = exports.TodoListQuerySchema = exports.TodoItemSchema = exports.TodoTypeSchema = exports.ReportSummarySchema = exports.OverviewSummarySchema = exports.ReportQuerySchema = exports.ReportRangeSchema = void 0;
 const zod_1 = require("zod");
 const common_1 = require("./common");
+const purchase_1 = require("./purchase");
 const sales_1 = require("./sales");
 /**
  * 仪表盘汇总契约：聚合页（经营概览 / 报表 / 待办 / 应收应付 / 设置日志 / 库存流水）
@@ -79,7 +80,7 @@ exports.ReportSummarySchema = zod_1.z.object({
         stock: zod_1.z.number().int().nonnegative(),
     })),
 });
-exports.TodoTypeSchema = zod_1.z.enum(['order', 'warning', 'notice', 'rma', 'transfer', 'stocktake']);
+exports.TodoTypeSchema = zod_1.z.enum(['order', 'warning', 'notice', 'rma', 'transfer', 'stocktake', 'purchase']);
 exports.TodoItemSchema = zod_1.z.object({
     id: zod_1.z.string(),
     type: exports.TodoTypeSchema,
@@ -117,6 +118,18 @@ exports.ReceivableRowSchema = zod_1.z.object({
     createdAt: zod_1.z.string(),
 });
 exports.ReceivablePageSchema = (0, common_1.pageResult)(exports.ReceivableRowSchema);
+/** 应付行：由采购订单派生，与应收行同结构（单号为采购单号） */
+exports.PayableRowSchema = zod_1.z.object({
+    id: zod_1.z.string().uuid(),
+    orderNo: zod_1.z.string(),
+    status: purchase_1.PurchaseOrderStatusSchema,
+    amount: zod_1.z.number().int().nonnegative(),
+    currency: zod_1.z.string().length(3),
+    settled: zod_1.z.number().int().nonnegative(),
+    unsettled: zod_1.z.number().int().nonnegative(),
+    createdAt: zod_1.z.string(),
+});
+exports.PayablePageSchema = (0, common_1.pageResult)(exports.PayableRowSchema);
 exports.RecentActivitySchema = zod_1.z.array(zod_1.z.object({
     text: zod_1.z.string(),
     meta: zod_1.z.string(),
