@@ -12,7 +12,7 @@ export declare const AuditEventSchema: z.ZodObject<{
     action: z.ZodString;
     /** 对象：从 path 首段推导，如 customers / sales-orders / purchase-orders */
     targetType: z.ZodString;
-    /** 对象 id（响应体 id），取不到时为 null */
+    /** 业务单号：响应体里的 rmaNo / transferNo / stocktakeNo / orderNo / code，取不到时退回 id，再取不到为 null */
     targetId: z.ZodNullable<z.ZodString>;
     payload: z.ZodNullable<z.ZodObject<{
         detail: z.ZodString;
@@ -55,7 +55,7 @@ export declare const AuditEventPageSchema: z.ZodObject<{
         action: z.ZodString;
         /** 对象：从 path 首段推导，如 customers / sales-orders / purchase-orders */
         targetType: z.ZodString;
-        /** 对象 id（响应体 id），取不到时为 null */
+        /** 业务单号：响应体里的 rmaNo / transferNo / stocktakeNo / orderNo / code，取不到时退回 id，再取不到为 null */
         targetId: z.ZodNullable<z.ZodString>;
         payload: z.ZodNullable<z.ZodObject<{
             detail: z.ZodString;

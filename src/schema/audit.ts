@@ -14,7 +14,7 @@ export const AuditEventSchema = z.object({
   action: z.string(),
   /** 对象：从 path 首段推导，如 customers / sales-orders / purchase-orders */
   targetType: z.string(),
-  /** 对象 id（响应体 id），取不到时为 null */
+  /** 业务单号：响应体里的 rmaNo / transferNo / stocktakeNo / orderNo / code，取不到时退回 id，再取不到为 null */
   targetId: IdSchema.nullable(),
   payload: z.object({ detail: z.string() }).nullable(),
   createdAt: z.string(),

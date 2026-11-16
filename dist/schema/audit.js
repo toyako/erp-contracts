@@ -16,7 +16,7 @@ exports.AuditEventSchema = zod_1.z.object({
     action: zod_1.z.string(),
     /** 对象：从 path 首段推导，如 customers / sales-orders / purchase-orders */
     targetType: zod_1.z.string(),
-    /** 对象 id（响应体 id），取不到时为 null */
+    /** 业务单号：响应体里的 rmaNo / transferNo / stocktakeNo / orderNo / code，取不到时退回 id，再取不到为 null */
     targetId: common_1.IdSchema.nullable(),
     payload: zod_1.z.object({ detail: zod_1.z.string() }).nullable(),
     createdAt: zod_1.z.string(),
