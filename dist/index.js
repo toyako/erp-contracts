@@ -20,3 +20,4 @@ __exportStar(require("./schema/product"), exports);
 __exportStar(require("./schema/inventory"), exports);
 __exportStar(require("./schema/sales"), exports);
 __exportStar(require("./schema/purchase"), exports);
+__exportStar(require("./schema/dashboard"), exports);
