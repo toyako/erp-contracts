@@ -79,7 +79,7 @@ exports.ReportSummarySchema = zod_1.z.object({
         stock: zod_1.z.number().int().nonnegative(),
     })),
 });
-exports.TodoTypeSchema = zod_1.z.enum(['order', 'warning', 'notice']);
+exports.TodoTypeSchema = zod_1.z.enum(['order', 'warning', 'notice', 'rma', 'transfer', 'stocktake']);
 exports.TodoItemSchema = zod_1.z.object({
     id: zod_1.z.string(),
     type: exports.TodoTypeSchema,
@@ -122,7 +122,7 @@ exports.RecentActivitySchema = zod_1.z.array(zod_1.z.object({
     meta: zod_1.z.string(),
     time: zod_1.z.string(),
 }));
-exports.MovementTypeSchema = zod_1.z.enum(['outbound', 'reserve']);
+exports.MovementTypeSchema = zod_1.z.enum(['outbound', 'reserve', 'inbound', 'transfer', 'adjust']);
 exports.MovementRowSchema = zod_1.z.object({
     id: zod_1.z.string(),
     type: exports.MovementTypeSchema,

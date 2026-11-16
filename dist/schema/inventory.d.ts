@@ -1,9 +1,13 @@
 import { z } from 'zod';
+/** 默认仓库：原型稿里的主仓；新批次（采购/RMA 入库）无指定仓库时落这里 */
+export declare const DEFAULT_LOCATION = "\u4E3B\u4ED3";
 export declare const InventoryLotSchema: z.ZodObject<{
     id: z.ZodString;
     tenantId: z.ZodString;
     skuId: z.ZodString;
     batchCode: z.ZodString;
+    /** 仓库/库位：批次归属的物理位置，调拨在不同位置间移动库存 */
+    location: z.ZodString;
     /** 可被占用的数量 */
     availableQty: z.ZodNumber;
     /** 已下单未履约、不可再售的数量 */
@@ -14,6 +18,7 @@ export declare const InventoryLotSchema: z.ZodObject<{
     tenantId: string;
     skuId: string;
     batchCode: string;
+    location: string;
     availableQty: number;
     reservedQty: number;
     totalQty: number;
@@ -22,6 +27,7 @@ export declare const InventoryLotSchema: z.ZodObject<{
     tenantId: string;
     skuId: string;
     batchCode: string;
+    location: string;
     availableQty: number;
     reservedQty: number;
     totalQty: number;
@@ -71,6 +77,8 @@ export declare const InventoryLotPageSchema: z.ZodObject<{
         tenantId: z.ZodString;
         skuId: z.ZodString;
         batchCode: z.ZodString;
+        /** 仓库/库位：批次归属的物理位置，调拨在不同位置间移动库存 */
+        location: z.ZodString;
         /** 可被占用的数量 */
         availableQty: z.ZodNumber;
         /** 已下单未履约、不可再售的数量 */
@@ -81,6 +89,7 @@ export declare const InventoryLotPageSchema: z.ZodObject<{
         tenantId: string;
         skuId: string;
         batchCode: string;
+        location: string;
         availableQty: number;
         reservedQty: number;
         totalQty: number;
@@ -89,6 +98,7 @@ export declare const InventoryLotPageSchema: z.ZodObject<{
         tenantId: string;
         skuId: string;
         batchCode: string;
+        location: string;
         availableQty: number;
         reservedQty: number;
         totalQty: number;
@@ -104,6 +114,7 @@ export declare const InventoryLotPageSchema: z.ZodObject<{
         tenantId: string;
         skuId: string;
         batchCode: string;
+        location: string;
         availableQty: number;
         reservedQty: number;
         totalQty: number;
@@ -117,6 +128,7 @@ export declare const InventoryLotPageSchema: z.ZodObject<{
         tenantId: string;
         skuId: string;
         batchCode: string;
+        location: string;
         availableQty: number;
         reservedQty: number;
         totalQty: number;

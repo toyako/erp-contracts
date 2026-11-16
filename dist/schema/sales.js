@@ -29,13 +29,16 @@ exports.SalesOrderSchema = zod_1.z.object({
     id: common_1.IdSchema,
     tenantId: common_1.IdSchema,
     orderNo: zod_1.z.string().min(1).max(64),
+    /** 关联客户：可选可空，老数据仍能校验；建单时传了就存，不传为 null */
+    customerId: common_1.IdSchema.nullable().optional(),
     status: exports.OrderStatusSchema,
     lines: zod_1.z.array(exports.OrderLineSchema).min(1),
     total: common_1.MoneySchema,
     createdAt: zod_1.z.string().datetime(),
 });
-/** 客户端只传 SKU 与数量，绝不接收金额 */
+/** 客户端只传 SKU 与数量，绝不接收金额；customerId 可选，传了则校验客户存在 */
 exports.CreateOrderRequestSchema = zod_1.z.object({
+    customerId: common_1.IdSchema.nullable().optional(),
     lines: zod_1.z
         .array(zod_1.z.object({ skuId: common_1.IdSchema, quantity: zod_1.z.number().int().positive() }))
         .min(1),

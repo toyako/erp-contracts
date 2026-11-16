@@ -40,6 +40,8 @@ export declare const SalesOrderSchema: z.ZodObject<{
     id: z.ZodString;
     tenantId: z.ZodString;
     orderNo: z.ZodString;
+    /** 关联客户：可选可空，老数据仍能校验；建单时传了就存，不传为 null */
+    customerId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     status: z.ZodEnum<["draft", "confirmed", "paid", "fulfilled", "cancelled"]>;
     lines: z.ZodArray<z.ZodObject<{
         id: z.ZodString;
@@ -103,6 +105,7 @@ export declare const SalesOrderSchema: z.ZodObject<{
             currency: string;
         };
     }[];
+    customerId?: string | null | undefined;
 }, {
     status: "draft" | "confirmed" | "paid" | "fulfilled" | "cancelled";
     total: {
@@ -122,10 +125,12 @@ export declare const SalesOrderSchema: z.ZodObject<{
             currency: string;
         };
     }[];
+    customerId?: string | null | undefined;
 }>;
 export type SalesOrder = z.infer<typeof SalesOrderSchema>;
-/** 客户端只传 SKU 与数量，绝不接收金额 */
+/** 客户端只传 SKU 与数量，绝不接收金额；customerId 可选，传了则校验客户存在 */
 export declare const CreateOrderRequestSchema: z.ZodObject<{
+    customerId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     lines: z.ZodArray<z.ZodObject<{
         skuId: z.ZodString;
         quantity: z.ZodNumber;
@@ -141,11 +146,13 @@ export declare const CreateOrderRequestSchema: z.ZodObject<{
         skuId: string;
         quantity: number;
     }[];
+    customerId?: string | null | undefined;
 }, {
     lines: {
         skuId: string;
         quantity: number;
     }[];
+    customerId?: string | null | undefined;
 }>;
 export type CreateOrderRequest = z.infer<typeof CreateOrderRequestSchema>;
 export declare const SalesOrderPageSchema: z.ZodObject<{
@@ -153,6 +160,8 @@ export declare const SalesOrderPageSchema: z.ZodObject<{
         id: z.ZodString;
         tenantId: z.ZodString;
         orderNo: z.ZodString;
+        /** 关联客户：可选可空，老数据仍能校验；建单时传了就存，不传为 null */
+        customerId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         status: z.ZodEnum<["draft", "confirmed", "paid", "fulfilled", "cancelled"]>;
         lines: z.ZodArray<z.ZodObject<{
             id: z.ZodString;
@@ -216,6 +225,7 @@ export declare const SalesOrderPageSchema: z.ZodObject<{
                 currency: string;
             };
         }[];
+        customerId?: string | null | undefined;
     }, {
         status: "draft" | "confirmed" | "paid" | "fulfilled" | "cancelled";
         total: {
@@ -235,6 +245,7 @@ export declare const SalesOrderPageSchema: z.ZodObject<{
                 currency: string;
             };
         }[];
+        customerId?: string | null | undefined;
     }>, "many">;
     total: z.ZodNumber;
     page: z.ZodNumber;
@@ -261,6 +272,7 @@ export declare const SalesOrderPageSchema: z.ZodObject<{
                 currency: string;
             };
         }[];
+        customerId?: string | null | undefined;
     }[];
     total: number;
 }, {
@@ -285,6 +297,7 @@ export declare const SalesOrderPageSchema: z.ZodObject<{
                 currency: string;
             };
         }[];
+        customerId?: string | null | undefined;
     }[];
     total: number;
 }>;

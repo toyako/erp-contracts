@@ -273,11 +273,11 @@ export declare const ReportSummarySchema: z.ZodObject<{
     }[];
 }>;
 export type ReportSummary = z.infer<typeof ReportSummarySchema>;
-export declare const TodoTypeSchema: z.ZodEnum<["order", "warning", "notice"]>;
+export declare const TodoTypeSchema: z.ZodEnum<["order", "warning", "notice", "rma", "transfer", "stocktake"]>;
 export type TodoType = z.infer<typeof TodoTypeSchema>;
 export declare const TodoItemSchema: z.ZodObject<{
     id: z.ZodString;
-    type: z.ZodEnum<["order", "warning", "notice"]>;
+    type: z.ZodEnum<["order", "warning", "notice", "rma", "transfer", "stocktake"]>;
     typeLabel: z.ZodString;
     cls: z.ZodString;
     title: z.ZodString;
@@ -289,7 +289,7 @@ export declare const TodoItemSchema: z.ZodObject<{
     action: z.ZodString;
     to: z.ZodString;
 }, "strip", z.ZodTypeAny, {
-    type: "order" | "warning" | "notice";
+    type: "order" | "warning" | "notice" | "rma" | "transfer" | "stocktake";
     id: string;
     typeLabel: string;
     cls: string;
@@ -301,7 +301,7 @@ export declare const TodoItemSchema: z.ZodObject<{
     action: string;
     to: string;
 }, {
-    type: "order" | "warning" | "notice";
+    type: "order" | "warning" | "notice" | "rma" | "transfer" | "stocktake";
     id: string;
     typeLabel: string;
     cls: string;
@@ -318,17 +318,17 @@ export declare const TodoListQuerySchema: z.ZodObject<{
     page: z.ZodDefault<z.ZodNumber>;
     pageSize: z.ZodDefault<z.ZodNumber>;
 } & {
-    type: z.ZodOptional<z.ZodEnum<["order", "warning", "notice"]>>;
+    type: z.ZodOptional<z.ZodEnum<["order", "warning", "notice", "rma", "transfer", "stocktake"]>>;
     status: z.ZodOptional<z.ZodEnum<["pending", "done"]>>;
     keyword: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
     page: number;
     pageSize: number;
-    type?: "order" | "warning" | "notice" | undefined;
+    type?: "order" | "warning" | "notice" | "rma" | "transfer" | "stocktake" | undefined;
     status?: "done" | "pending" | undefined;
     keyword?: string | undefined;
 }, {
-    type?: "order" | "warning" | "notice" | undefined;
+    type?: "order" | "warning" | "notice" | "rma" | "transfer" | "stocktake" | undefined;
     status?: "done" | "pending" | undefined;
     page?: number | undefined;
     pageSize?: number | undefined;
@@ -338,7 +338,7 @@ export type TodoListQuery = z.infer<typeof TodoListQuerySchema>;
 export declare const TodoListPageSchema: z.ZodObject<{
     items: z.ZodArray<z.ZodObject<{
         id: z.ZodString;
-        type: z.ZodEnum<["order", "warning", "notice"]>;
+        type: z.ZodEnum<["order", "warning", "notice", "rma", "transfer", "stocktake"]>;
         typeLabel: z.ZodString;
         cls: z.ZodString;
         title: z.ZodString;
@@ -350,7 +350,7 @@ export declare const TodoListPageSchema: z.ZodObject<{
         action: z.ZodString;
         to: z.ZodString;
     }, "strip", z.ZodTypeAny, {
-        type: "order" | "warning" | "notice";
+        type: "order" | "warning" | "notice" | "rma" | "transfer" | "stocktake";
         id: string;
         typeLabel: string;
         cls: string;
@@ -362,7 +362,7 @@ export declare const TodoListPageSchema: z.ZodObject<{
         action: string;
         to: string;
     }, {
-        type: "order" | "warning" | "notice";
+        type: "order" | "warning" | "notice" | "rma" | "transfer" | "stocktake";
         id: string;
         typeLabel: string;
         cls: string;
@@ -381,7 +381,7 @@ export declare const TodoListPageSchema: z.ZodObject<{
     page: number;
     pageSize: number;
     items: {
-        type: "order" | "warning" | "notice";
+        type: "order" | "warning" | "notice" | "rma" | "transfer" | "stocktake";
         id: string;
         typeLabel: string;
         cls: string;
@@ -398,7 +398,7 @@ export declare const TodoListPageSchema: z.ZodObject<{
     page: number;
     pageSize: number;
     items: {
-        type: "order" | "warning" | "notice";
+        type: "order" | "warning" | "notice" | "rma" | "transfer" | "stocktake";
         id: string;
         typeLabel: string;
         cls: string;
@@ -535,11 +535,11 @@ export declare const RecentActivitySchema: z.ZodArray<z.ZodObject<{
     meta: string;
 }>, "many">;
 export type RecentActivity = z.infer<typeof RecentActivitySchema>;
-export declare const MovementTypeSchema: z.ZodEnum<["outbound", "reserve"]>;
+export declare const MovementTypeSchema: z.ZodEnum<["outbound", "reserve", "inbound", "transfer", "adjust"]>;
 export type MovementType = z.infer<typeof MovementTypeSchema>;
 export declare const MovementRowSchema: z.ZodObject<{
     id: z.ZodString;
-    type: z.ZodEnum<["outbound", "reserve"]>;
+    type: z.ZodEnum<["outbound", "reserve", "inbound", "transfer", "adjust"]>;
     typeLabel: z.ZodString;
     cls: z.ZodString;
     batch: z.ZodString;
@@ -550,7 +550,7 @@ export declare const MovementRowSchema: z.ZodObject<{
     actor: z.ZodString;
     time: z.ZodString;
 }, "strip", z.ZodTypeAny, {
-    type: "reserve" | "outbound";
+    type: "inbound" | "reserve" | "outbound" | "transfer" | "adjust";
     id: string;
     skuId: string;
     typeLabel: string;
@@ -562,7 +562,7 @@ export declare const MovementRowSchema: z.ZodObject<{
     skuName: string;
     delta: number;
 }, {
-    type: "reserve" | "outbound";
+    type: "inbound" | "reserve" | "outbound" | "transfer" | "adjust";
     id: string;
     skuId: string;
     typeLabel: string;
@@ -579,15 +579,15 @@ export declare const MovementListQuerySchema: z.ZodObject<{
     page: z.ZodDefault<z.ZodNumber>;
     pageSize: z.ZodDefault<z.ZodNumber>;
 } & {
-    type: z.ZodOptional<z.ZodEnum<["outbound", "reserve"]>>;
+    type: z.ZodOptional<z.ZodEnum<["outbound", "reserve", "inbound", "transfer", "adjust"]>>;
     keyword: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
     page: number;
     pageSize: number;
-    type?: "reserve" | "outbound" | undefined;
+    type?: "inbound" | "reserve" | "outbound" | "transfer" | "adjust" | undefined;
     keyword?: string | undefined;
 }, {
-    type?: "reserve" | "outbound" | undefined;
+    type?: "inbound" | "reserve" | "outbound" | "transfer" | "adjust" | undefined;
     page?: number | undefined;
     pageSize?: number | undefined;
     keyword?: string | undefined;
@@ -596,7 +596,7 @@ export type MovementListQuery = z.infer<typeof MovementListQuerySchema>;
 export declare const MovementListPageSchema: z.ZodObject<{
     items: z.ZodArray<z.ZodObject<{
         id: z.ZodString;
-        type: z.ZodEnum<["outbound", "reserve"]>;
+        type: z.ZodEnum<["outbound", "reserve", "inbound", "transfer", "adjust"]>;
         typeLabel: z.ZodString;
         cls: z.ZodString;
         batch: z.ZodString;
@@ -607,7 +607,7 @@ export declare const MovementListPageSchema: z.ZodObject<{
         actor: z.ZodString;
         time: z.ZodString;
     }, "strip", z.ZodTypeAny, {
-        type: "reserve" | "outbound";
+        type: "inbound" | "reserve" | "outbound" | "transfer" | "adjust";
         id: string;
         skuId: string;
         typeLabel: string;
@@ -619,7 +619,7 @@ export declare const MovementListPageSchema: z.ZodObject<{
         skuName: string;
         delta: number;
     }, {
-        type: "reserve" | "outbound";
+        type: "inbound" | "reserve" | "outbound" | "transfer" | "adjust";
         id: string;
         skuId: string;
         typeLabel: string;
@@ -638,7 +638,7 @@ export declare const MovementListPageSchema: z.ZodObject<{
     page: number;
     pageSize: number;
     items: {
-        type: "reserve" | "outbound";
+        type: "inbound" | "reserve" | "outbound" | "transfer" | "adjust";
         id: string;
         skuId: string;
         typeLabel: string;
@@ -655,7 +655,7 @@ export declare const MovementListPageSchema: z.ZodObject<{
     page: number;
     pageSize: number;
     items: {
-        type: "reserve" | "outbound";
+        type: "inbound" | "reserve" | "outbound" | "transfer" | "adjust";
         id: string;
         skuId: string;
         typeLabel: string;

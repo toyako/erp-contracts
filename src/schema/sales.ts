@@ -32,6 +32,8 @@ export const SalesOrderSchema = z.object({
   id: IdSchema,
   tenantId: IdSchema,
   orderNo: z.string().min(1).max(64),
+  /** 关联客户：可选可空，老数据仍能校验；建单时传了就存，不传为 null */
+  customerId: IdSchema.nullable().optional(),
   status: OrderStatusSchema,
   lines: z.array(OrderLineSchema).min(1),
   total: MoneySchema,
@@ -39,8 +41,9 @@ export const SalesOrderSchema = z.object({
 });
 export type SalesOrder = z.infer<typeof SalesOrderSchema>;
 
-/** 客户端只传 SKU 与数量，绝不接收金额 */
+/** 客户端只传 SKU 与数量，绝不接收金额；customerId 可选，传了则校验客户存在 */
 export const CreateOrderRequestSchema = z.object({
+  customerId: IdSchema.nullable().optional(),
   lines: z
     .array(z.object({ skuId: IdSchema, quantity: z.number().int().positive() }))
     .min(1),

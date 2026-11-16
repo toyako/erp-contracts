@@ -102,7 +102,7 @@ export const ReportSummarySchema = z.object({
 });
 export type ReportSummary = z.infer<typeof ReportSummarySchema>;
 
-export const TodoTypeSchema = z.enum(['order', 'warning', 'notice']);
+export const TodoTypeSchema = z.enum(['order', 'warning', 'notice', 'rma', 'transfer', 'stocktake']);
 export type TodoType = z.infer<typeof TodoTypeSchema>;
 
 export const TodoItemSchema = z.object({
@@ -163,7 +163,7 @@ export const RecentActivitySchema = z.array(
 );
 export type RecentActivity = z.infer<typeof RecentActivitySchema>;
 
-export const MovementTypeSchema = z.enum(['outbound', 'reserve']);
+export const MovementTypeSchema = z.enum(['outbound', 'reserve', 'inbound', 'transfer', 'adjust']);
 export type MovementType = z.infer<typeof MovementTypeSchema>;
 
 export const MovementRowSchema = z.object({

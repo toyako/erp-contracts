@@ -1,11 +1,16 @@
 import { z } from 'zod';
 import { IdSchema, pageResult } from './common';
 
+/** 默认仓库：原型稿里的主仓；新批次（采购/RMA 入库）无指定仓库时落这里 */
+export const DEFAULT_LOCATION = '主仓';
+
 export const InventoryLotSchema = z.object({
   id: IdSchema,
   tenantId: IdSchema,
   skuId: IdSchema,
   batchCode: z.string().min(1).max(64),
+  /** 仓库/库位：批次归属的物理位置，调拨在不同位置间移动库存 */
+  location: z.string().min(1).max(32),
   /** 可被占用的数量 */
   availableQty: z.number().int().nonnegative(),
   /** 已下单未履约、不可再售的数量 */
