@@ -32,3 +32,5 @@ __exportStar(require("./schema/transfer"), exports);
 __exportStar(require("./schema/stocktake"), exports);
 __exportStar(require("./schema/dashboard"), exports);
 __exportStar(require("./schema/audit"), exports);
+__exportStar(require("./schema/approval-rule"), exports);
+__exportStar(require("./schema/exchange"), exports);
