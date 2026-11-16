@@ -133,7 +133,7 @@ export const ReportSummarySchema = z.object({
 });
 export type ReportSummary = z.infer<typeof ReportSummarySchema>;
 
-export const TodoTypeSchema = z.enum(['order', 'warning', 'notice', 'rma', 'transfer', 'stocktake', 'purchase', 'shipment', 'invoice']);
+export const TodoTypeSchema = z.enum(['order', 'warning', 'notice', 'rma', 'transfer', 'stocktake', 'purchase', 'shipment', 'invoice', 'followup']);
 
 /**
  * 采购报表：按采购单创建时间分桶（与 getReport 同口径）；receivedRate 为已入库金额占比，
