@@ -39,12 +39,13 @@ exports.CreateSkuRequestSchema = zod_1.z.object({
 });
 exports.PriceListPageSchema = (0, common_1.pageResult)(exports.PriceListSchema);
 /**
- * 新建价格：channelCode 缺省为 'default'；effectiveFrom 缺省时服务端取当前时间。
+ * 新建价格：channelCode 缺省为 'DIRECT'（与 Prisma 种子一致，线上在用的渠道码）；
+ * effectiveFrom 缺省时服务端取当前时间。
  * 金额必须为正（MoneySchema 本身允许 0，价格档案里 0 元无意义）。
  */
 exports.CreatePriceRequestSchema = zod_1.z.object({
     skuId: common_1.IdSchema,
-    channelCode: zod_1.z.string().min(1).max(64).default('default'),
+    channelCode: zod_1.z.string().min(1).max(64).default('DIRECT'),
     price: zod_1.z.object({
         amount: zod_1.z.number().int().positive(),
         currency: zod_1.z.string().length(3),

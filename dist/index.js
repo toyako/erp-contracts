@@ -25,3 +25,4 @@ __exportStar(require("./schema/rma"), exports);
 __exportStar(require("./schema/transfer"), exports);
 __exportStar(require("./schema/stocktake"), exports);
 __exportStar(require("./schema/dashboard"), exports);
+__exportStar(require("./schema/audit"), exports);

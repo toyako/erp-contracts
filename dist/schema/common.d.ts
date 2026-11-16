@@ -28,12 +28,16 @@ export type PageQuery = z.infer<typeof PageQuerySchema>;
 export declare const PageQueryParamsSchema: z.ZodObject<{
     page: z.ZodDefault<z.ZodNumber>;
     pageSize: z.ZodDefault<z.ZodNumber>;
+    /** 列表搜索关键字（按各接口约定的字段子串匹配，如客户编码/名称/电话） */
+    search: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
     page: number;
     pageSize: number;
+    search?: string | undefined;
 }, {
     page?: number | undefined;
     pageSize?: number | undefined;
+    search?: string | undefined;
 }>;
 export type PageQueryParams = z.infer<typeof PageQueryParamsSchema>;
 export declare const pageResult: <T extends z.ZodTypeAny>(item: T) => z.ZodObject<{

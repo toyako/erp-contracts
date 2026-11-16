@@ -25,6 +25,8 @@ export declare const RmaSchema: z.ZodObject<{
         amount: number;
         currency: string;
     }>;
+    /** 拒绝原因：仅 rejected 状态下有值，由审核人在拒绝时填写 */
+    rejectReason: z.ZodNullable<z.ZodString>;
     createdAt: z.ZodString;
     receivedAt: z.ZodNullable<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
@@ -41,6 +43,7 @@ export declare const RmaSchema: z.ZodObject<{
         amount: number;
         currency: string;
     };
+    rejectReason: string | null;
     receivedAt: string | null;
 }, {
     status: "received" | "cancelled" | "requested" | "approved" | "rejected" | "refunded";
@@ -56,9 +59,19 @@ export declare const RmaSchema: z.ZodObject<{
         amount: number;
         currency: string;
     };
+    rejectReason: string | null;
     receivedAt: string | null;
 }>;
 export type Rma = z.infer<typeof RmaSchema>;
+/** 拒绝退货：原因必填（1–200 字），落库到 rejectReason */
+export declare const RejectRmaRequestSchema: z.ZodObject<{
+    reason: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    reason: string;
+}, {
+    reason: string;
+}>;
+export type RejectRmaRequest = z.infer<typeof RejectRmaRequestSchema>;
 export declare const CreateRmaRequestSchema: z.ZodObject<{
     orderId: z.ZodString;
     skuId: z.ZodString;
@@ -97,6 +110,8 @@ export declare const RmaPageSchema: z.ZodObject<{
             amount: number;
             currency: string;
         }>;
+        /** 拒绝原因：仅 rejected 状态下有值，由审核人在拒绝时填写 */
+        rejectReason: z.ZodNullable<z.ZodString>;
         createdAt: z.ZodString;
         receivedAt: z.ZodNullable<z.ZodString>;
     }, "strip", z.ZodTypeAny, {
@@ -113,6 +128,7 @@ export declare const RmaPageSchema: z.ZodObject<{
             amount: number;
             currency: string;
         };
+        rejectReason: string | null;
         receivedAt: string | null;
     }, {
         status: "received" | "cancelled" | "requested" | "approved" | "rejected" | "refunded";
@@ -128,6 +144,7 @@ export declare const RmaPageSchema: z.ZodObject<{
             amount: number;
             currency: string;
         };
+        rejectReason: string | null;
         receivedAt: string | null;
     }>, "many">;
     total: z.ZodNumber;
@@ -150,6 +167,7 @@ export declare const RmaPageSchema: z.ZodObject<{
             amount: number;
             currency: string;
         };
+        rejectReason: string | null;
         receivedAt: string | null;
     }[];
     total: number;
@@ -170,6 +188,7 @@ export declare const RmaPageSchema: z.ZodObject<{
             amount: number;
             currency: string;
         };
+        rejectReason: string | null;
         receivedAt: string | null;
     }[];
     total: number;

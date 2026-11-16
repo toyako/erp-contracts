@@ -49,12 +49,13 @@ export const PriceListPageSchema = pageResult(PriceListSchema);
 export type PriceListPage = z.infer<typeof PriceListPageSchema>;
 
 /**
- * 新建价格：channelCode 缺省为 'default'；effectiveFrom 缺省时服务端取当前时间。
+ * 新建价格：channelCode 缺省为 'DIRECT'（与 Prisma 种子一致，线上在用的渠道码）；
+ * effectiveFrom 缺省时服务端取当前时间。
  * 金额必须为正（MoneySchema 本身允许 0，价格档案里 0 元无意义）。
  */
 export const CreatePriceRequestSchema = z.object({
   skuId: IdSchema,
-  channelCode: z.string().min(1).max(64).default('default'),
+  channelCode: z.string().min(1).max(64).default('DIRECT'),
   price: z.object({
     amount: z.number().int().positive(),
     currency: z.string().length(3),

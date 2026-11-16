@@ -20,6 +20,8 @@ export type PageQuery = z.infer<typeof PageQuerySchema>;
 export const PageQueryParamsSchema = z.object({
   page: z.coerce.number().int().positive().default(1),
   pageSize: z.coerce.number().int().positive().max(200).default(20),
+  /** 列表搜索关键字（按各接口约定的字段子串匹配，如客户编码/名称/电话） */
+  search: z.string().max(128).optional(),
 });
 export type PageQueryParams = z.infer<typeof PageQueryParamsSchema>;
 

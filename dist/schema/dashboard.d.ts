@@ -317,6 +317,7 @@ export type TodoItem = z.infer<typeof TodoItemSchema>;
 export declare const TodoListQuerySchema: z.ZodObject<{
     page: z.ZodDefault<z.ZodNumber>;
     pageSize: z.ZodDefault<z.ZodNumber>;
+    search: z.ZodOptional<z.ZodString>;
 } & {
     type: z.ZodOptional<z.ZodEnum<["order", "warning", "notice", "rma", "transfer", "stocktake", "purchase"]>>;
     status: z.ZodOptional<z.ZodEnum<["pending", "done"]>>;
@@ -326,12 +327,14 @@ export declare const TodoListQuerySchema: z.ZodObject<{
     pageSize: number;
     type?: "order" | "warning" | "notice" | "rma" | "transfer" | "stocktake" | "purchase" | undefined;
     status?: "done" | "pending" | undefined;
+    search?: string | undefined;
     keyword?: string | undefined;
 }, {
     type?: "order" | "warning" | "notice" | "rma" | "transfer" | "stocktake" | "purchase" | undefined;
     status?: "done" | "pending" | undefined;
     page?: number | undefined;
     pageSize?: number | undefined;
+    search?: string | undefined;
     keyword?: string | undefined;
 }>;
 export type TodoListQuery = z.infer<typeof TodoListQuerySchema>;
@@ -670,6 +673,7 @@ export type MovementRow = z.infer<typeof MovementRowSchema>;
 export declare const MovementListQuerySchema: z.ZodObject<{
     page: z.ZodDefault<z.ZodNumber>;
     pageSize: z.ZodDefault<z.ZodNumber>;
+    search: z.ZodOptional<z.ZodString>;
 } & {
     type: z.ZodOptional<z.ZodEnum<["outbound", "reserve", "inbound", "transfer", "adjust"]>>;
     keyword: z.ZodOptional<z.ZodString>;
@@ -677,11 +681,13 @@ export declare const MovementListQuerySchema: z.ZodObject<{
     page: number;
     pageSize: number;
     type?: "inbound" | "reserve" | "outbound" | "transfer" | "adjust" | undefined;
+    search?: string | undefined;
     keyword?: string | undefined;
 }, {
     type?: "inbound" | "reserve" | "outbound" | "transfer" | "adjust" | undefined;
     page?: number | undefined;
     pageSize?: number | undefined;
+    search?: string | undefined;
     keyword?: string | undefined;
 }>;
 export type MovementListQuery = z.infer<typeof MovementListQuerySchema>;

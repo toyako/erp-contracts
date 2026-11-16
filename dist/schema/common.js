@@ -16,6 +16,8 @@ exports.PageQuerySchema = zod_1.z.object({
 exports.PageQueryParamsSchema = zod_1.z.object({
     page: zod_1.z.coerce.number().int().positive().default(1),
     pageSize: zod_1.z.coerce.number().int().positive().max(200).default(20),
+    /** 列表搜索关键字（按各接口约定的字段子串匹配，如客户编码/名称/电话） */
+    search: zod_1.z.string().max(128).optional(),
 });
 const pageResult = (item) => zod_1.z.object({
     items: zod_1.z.array(item),

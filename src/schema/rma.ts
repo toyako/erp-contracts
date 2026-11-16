@@ -27,10 +27,18 @@ export const RmaSchema = z.object({
   status: RmaStatusSchema,
   /** 退款金额由服务端按行单价 × 数量算，客户端不传金额 */
   refundAmount: MoneySchema,
+  /** 拒绝原因：仅 rejected 状态下有值，由审核人在拒绝时填写 */
+  rejectReason: z.string().nullable(),
   createdAt: z.string(),
   receivedAt: z.string().nullable(),
 });
 export type Rma = z.infer<typeof RmaSchema>;
+
+/** 拒绝退货：原因必填（1–200 字），落库到 rejectReason */
+export const RejectRmaRequestSchema = z.object({
+  reason: z.string().min(1, '拒绝原因不能为空').max(200, '拒绝原因最多 200 字'),
+});
+export type RejectRmaRequest = z.infer<typeof RejectRmaRequestSchema>;
 
 export const CreateRmaRequestSchema = z.object({
   orderId: IdSchema,
