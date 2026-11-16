@@ -137,7 +137,7 @@ export const TodoTypeSchema = z.enum(['order', 'warning', 'notice', 'rma', 'tran
 
 /**
  * 采购报表：按采购单创建时间分桶（与 getReport 同口径）；receivedRate 为已入库金额占比，
- * 无采购单时为 null。supplierRanking 按采购金额降序；statusCounts 覆盖全部四种状态（含 0）。
+ * 无采购单时为 null。supplierRanking 按采购金额降序；statusCounts 覆盖全部七种状态（含 0）。
  */
 export const PurchaseReportSchema = z.object({
   range: ReportRangeSchema,

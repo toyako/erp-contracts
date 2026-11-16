@@ -396,7 +396,7 @@ export type ReportSummary = z.infer<typeof ReportSummarySchema>;
 export declare const TodoTypeSchema: z.ZodEnum<["order", "warning", "notice", "rma", "transfer", "stocktake", "purchase", "shipment", "invoice"]>;
 /**
  * 采购报表：按采购单创建时间分桶（与 getReport 同口径）；receivedRate 为已入库金额占比，
- * 无采购单时为 null。supplierRanking 按采购金额降序；statusCounts 覆盖全部四种状态（含 0）。
+ * 无采购单时为 null。supplierRanking 按采购金额降序；statusCounts 覆盖全部七种状态（含 0）。
  */
 export declare const PurchaseReportSchema: z.ZodObject<{
     range: z.ZodEnum<["7d", "30d", "month"]>;
@@ -428,15 +428,15 @@ export declare const PurchaseReportSchema: z.ZodObject<{
         count: number;
     }>, "many">;
     statusCounts: z.ZodArray<z.ZodObject<{
-        status: z.ZodEnum<["draft", "submitted", "received", "cancelled"]>;
+        status: z.ZodEnum<["draft", "submitted", "approved", "partially_received", "received", "rejected", "cancelled"]>;
         count: z.ZodNumber;
         amount: z.ZodNumber;
     }, "strip", z.ZodTypeAny, {
-        status: "received" | "draft" | "cancelled" | "submitted";
+        status: "received" | "draft" | "cancelled" | "submitted" | "approved" | "partially_received" | "rejected";
         amount: number;
         count: number;
     }, {
-        status: "received" | "draft" | "cancelled" | "submitted";
+        status: "received" | "draft" | "cancelled" | "submitted" | "approved" | "partially_received" | "rejected";
         amount: number;
         count: number;
     }>, "many">;
@@ -455,7 +455,7 @@ export declare const PurchaseReportSchema: z.ZodObject<{
         count: number;
     }[];
     statusCounts: {
-        status: "received" | "draft" | "cancelled" | "submitted";
+        status: "received" | "draft" | "cancelled" | "submitted" | "approved" | "partially_received" | "rejected";
         amount: number;
         count: number;
     }[];
@@ -473,7 +473,7 @@ export declare const PurchaseReportSchema: z.ZodObject<{
         count: number;
     }[];
     statusCounts: {
-        status: "received" | "draft" | "cancelled" | "submitted";
+        status: "received" | "draft" | "cancelled" | "submitted" | "approved" | "partially_received" | "rejected";
         amount: number;
         count: number;
     }[];
@@ -734,14 +734,14 @@ export type ReceivablePage = z.infer<typeof ReceivablePageSchema>;
 export declare const PayableRowSchema: z.ZodObject<{
     id: z.ZodString;
     orderNo: z.ZodString;
-    status: z.ZodEnum<["draft", "submitted", "received", "cancelled"]>;
+    status: z.ZodEnum<["draft", "submitted", "approved", "partially_received", "received", "rejected", "cancelled"]>;
     amount: z.ZodNumber;
     currency: z.ZodString;
     settled: z.ZodNumber;
     unsettled: z.ZodNumber;
     createdAt: z.ZodString;
 }, "strip", z.ZodTypeAny, {
-    status: "received" | "draft" | "cancelled" | "submitted";
+    status: "received" | "draft" | "cancelled" | "submitted" | "approved" | "partially_received" | "rejected";
     amount: number;
     currency: string;
     id: string;
@@ -750,7 +750,7 @@ export declare const PayableRowSchema: z.ZodObject<{
     settled: number;
     unsettled: number;
 }, {
-    status: "received" | "draft" | "cancelled" | "submitted";
+    status: "received" | "draft" | "cancelled" | "submitted" | "approved" | "partially_received" | "rejected";
     amount: number;
     currency: string;
     id: string;
@@ -764,14 +764,14 @@ export declare const PayablePageSchema: z.ZodObject<{
     items: z.ZodArray<z.ZodObject<{
         id: z.ZodString;
         orderNo: z.ZodString;
-        status: z.ZodEnum<["draft", "submitted", "received", "cancelled"]>;
+        status: z.ZodEnum<["draft", "submitted", "approved", "partially_received", "received", "rejected", "cancelled"]>;
         amount: z.ZodNumber;
         currency: z.ZodString;
         settled: z.ZodNumber;
         unsettled: z.ZodNumber;
         createdAt: z.ZodString;
     }, "strip", z.ZodTypeAny, {
-        status: "received" | "draft" | "cancelled" | "submitted";
+        status: "received" | "draft" | "cancelled" | "submitted" | "approved" | "partially_received" | "rejected";
         amount: number;
         currency: string;
         id: string;
@@ -780,7 +780,7 @@ export declare const PayablePageSchema: z.ZodObject<{
         settled: number;
         unsettled: number;
     }, {
-        status: "received" | "draft" | "cancelled" | "submitted";
+        status: "received" | "draft" | "cancelled" | "submitted" | "approved" | "partially_received" | "rejected";
         amount: number;
         currency: string;
         id: string;
@@ -796,7 +796,7 @@ export declare const PayablePageSchema: z.ZodObject<{
     page: number;
     pageSize: number;
     items: {
-        status: "received" | "draft" | "cancelled" | "submitted";
+        status: "received" | "draft" | "cancelled" | "submitted" | "approved" | "partially_received" | "rejected";
         amount: number;
         currency: string;
         id: string;
@@ -810,7 +810,7 @@ export declare const PayablePageSchema: z.ZodObject<{
     page: number;
     pageSize: number;
     items: {
-        status: "received" | "draft" | "cancelled" | "submitted";
+        status: "received" | "draft" | "cancelled" | "submitted" | "approved" | "partially_received" | "rejected";
         amount: number;
         currency: string;
         id: string;

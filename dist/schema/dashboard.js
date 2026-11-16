@@ -109,7 +109,7 @@ exports.ReportSummarySchema = zod_1.z.object({
 exports.TodoTypeSchema = zod_1.z.enum(['order', 'warning', 'notice', 'rma', 'transfer', 'stocktake', 'purchase', 'shipment', 'invoice']);
 /**
  * 采购报表：按采购单创建时间分桶（与 getReport 同口径）；receivedRate 为已入库金额占比，
- * 无采购单时为 null。supplierRanking 按采购金额降序；statusCounts 覆盖全部四种状态（含 0）。
+ * 无采购单时为 null。supplierRanking 按采购金额降序；statusCounts 覆盖全部七种状态（含 0）。
  */
 exports.PurchaseReportSchema = zod_1.z.object({
     range: exports.ReportRangeSchema,
