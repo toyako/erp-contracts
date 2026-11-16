@@ -6,6 +6,7 @@ export * from './schema/sales';
 export * from './schema/purchase';
 export * from './schema/customer';
 export * from './schema/rma';
+export * from './schema/shipment';
 export * from './schema/transfer';
 export * from './schema/stocktake';
 export * from './schema/dashboard';

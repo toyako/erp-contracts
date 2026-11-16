@@ -103,7 +103,7 @@ export const ReportSummarySchema = z.object({
 });
 export type ReportSummary = z.infer<typeof ReportSummarySchema>;
 
-export const TodoTypeSchema = z.enum(['order', 'warning', 'notice', 'rma', 'transfer', 'stocktake', 'purchase']);
+export const TodoTypeSchema = z.enum(['order', 'warning', 'notice', 'rma', 'transfer', 'stocktake', 'purchase', 'shipment']);
 export type TodoType = z.infer<typeof TodoTypeSchema>;
 
 export const TodoItemSchema = z.object({

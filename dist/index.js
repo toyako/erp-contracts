@@ -22,6 +22,7 @@ __exportStar(require("./schema/sales"), exports);
 __exportStar(require("./schema/purchase"), exports);
 __exportStar(require("./schema/customer"), exports);
 __exportStar(require("./schema/rma"), exports);
+__exportStar(require("./schema/shipment"), exports);
 __exportStar(require("./schema/transfer"), exports);
 __exportStar(require("./schema/stocktake"), exports);
 __exportStar(require("./schema/dashboard"), exports);
