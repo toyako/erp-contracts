@@ -18,3 +18,4 @@ export * from './schema/dashboard';
 export * from './schema/audit';
 export * from './schema/approval-rule';
 export * from './schema/exchange';
+export * from './schema/import';

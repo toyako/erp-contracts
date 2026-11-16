@@ -34,3 +34,4 @@ __exportStar(require("./schema/dashboard"), exports);
 __exportStar(require("./schema/audit"), exports);
 __exportStar(require("./schema/approval-rule"), exports);
 __exportStar(require("./schema/exchange"), exports);
+__exportStar(require("./schema/import"), exports);
