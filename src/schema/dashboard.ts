@@ -40,6 +40,13 @@ export const OverviewSummarySchema = z.object({
       amount: z.number().int().nonnegative(),
     }),
   ),
+  /** 近 30 个自然日（与 trend7 同口径，供概览趋势图切换） */
+  trend30: z.array(
+    z.object({
+      date: z.string(),
+      amount: z.number().int().nonnegative(),
+    }),
+  ),
   /** 按订单行数量取前 5；SKU 缺失时 code 为 skuId 前 8 位、spec 为空串 */
   ranking: z.array(
     z.object({
@@ -100,10 +107,66 @@ export const ReportSummarySchema = z.object({
       stock: z.number().int().nonnegative(),
     }),
   ),
+  /**
+   * 毛利：按订单行算（销售额 = 行单价×数量，成本 = SKU 成本价×数量，只计非 cancelled 订单）。
+   * cost/gross/marginRate 为 null 表示该 SKU 未维护成本价；汇总只计已维护成本的 SKU，
+   * 全部未维护时 totalGross/marginRate 为 null；marginRate 为毛利率百分比（1 位小数）。
+   */
+  gross: z.object({
+    totalAmount: z.number().int().nonnegative(),
+    totalCost: z.number().int().nonnegative(),
+    totalGross: z.number().int().nullable(),
+    marginRate: z.number().nullable(),
+    rows: z.array(
+      z.object({
+        skuId: z.string().uuid(),
+        code: z.string(),
+        spec: z.string(),
+        qty: z.number().int().nonnegative(),
+        amount: z.number().int().nonnegative(),
+        cost: z.number().int().nullable(),
+        gross: z.number().int().nullable(),
+        marginRate: z.number().nullable(),
+      }),
+    ),
+  }),
 });
 export type ReportSummary = z.infer<typeof ReportSummarySchema>;
 
 export const TodoTypeSchema = z.enum(['order', 'warning', 'notice', 'rma', 'transfer', 'stocktake', 'purchase', 'shipment', 'invoice']);
+
+/**
+ * 采购报表：按采购单创建时间分桶（与 getReport 同口径）；receivedRate 为已入库金额占比，
+ * 无采购单时为 null。supplierRanking 按采购金额降序；statusCounts 覆盖全部四种状态（含 0）。
+ */
+export const PurchaseReportSchema = z.object({
+  range: ReportRangeSchema,
+  /** 6 个等长桶，label 为桶首日 M-D，amount 单位：分（采购单总额） */
+  buckets: z.array(
+    z.object({
+      label: z.string(),
+      amount: z.number().int().nonnegative(),
+    }),
+  ),
+  supplierRanking: z.array(
+    z.object({
+      supplierId: z.string().uuid(),
+      name: z.string(),
+      amount: z.number().int().nonnegative(),
+      count: z.number().int().nonnegative(),
+    }),
+  ),
+  statusCounts: z.array(
+    z.object({
+      status: PurchaseOrderStatusSchema,
+      count: z.number().int().nonnegative(),
+      amount: z.number().int().nonnegative(),
+    }),
+  ),
+  /** 已入库（received）金额 / 全部采购单总额，无采购单时为 null */
+  receivedRate: z.number().nullable(),
+});
+export type PurchaseReport = z.infer<typeof PurchaseReportSchema>;
 export type TodoType = z.infer<typeof TodoTypeSchema>;
 
 export const TodoItemSchema = z.object({

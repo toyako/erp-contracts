@@ -18,6 +18,8 @@ exports.SkuSchema = zod_1.z.object({
     spec: zod_1.z.string().max(256),
     unit: zod_1.z.string().min(1).max(32),
     enabled: zod_1.z.boolean(),
+    /** 成本价（分）：null = 未维护，毛利算不出；售价走价格档案，成本走 SKU 档案 */
+    cost: common_1.MoneySchema.nullable(),
 });
 /** 价格由服务端维护，创建订单时客户端不得传金额 */
 exports.PriceListSchema = zod_1.z.object({
@@ -62,9 +64,10 @@ exports.UpdatePriceRequestSchema = zod_1.z.object({
         .optional(),
     effectiveTo: zod_1.z.string().datetime().nullable().optional(),
 });
-/** SKU 编辑：只传要改的字段，编码与所属 SPU 不可改 */
+/** SKU 编辑：只传要改的字段，编码与所属 SPU 不可改；cost 传 null 表示清除成本价（回未维护） */
 exports.UpdateSkuRequestSchema = zod_1.z.object({
     spec: zod_1.z.string().max(256).optional(),
     unit: zod_1.z.string().min(1).max(32).optional(),
     enabled: zod_1.z.boolean().optional(),
+    cost: common_1.MoneySchema.nullable().optional(),
 });

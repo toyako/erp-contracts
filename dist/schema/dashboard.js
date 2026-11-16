@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MovementListPageSchema = exports.MovementListQuerySchema = exports.MovementRowSchema = exports.MovementTypeSchema = exports.RecentActivitySchema = exports.PayablePageSchema = exports.PayableRowSchema = exports.ReceivablePageSchema = exports.ReceivableRowSchema = exports.FinanceSummarySchema = exports.TodoListPageSchema = exports.TodoListQuerySchema = exports.TodoItemSchema = exports.TodoTypeSchema = exports.ReportSummarySchema = exports.OverviewSummarySchema = exports.ReportQuerySchema = exports.ReportRangeSchema = void 0;
+exports.MovementListPageSchema = exports.MovementListQuerySchema = exports.MovementRowSchema = exports.MovementTypeSchema = exports.RecentActivitySchema = exports.PayablePageSchema = exports.PayableRowSchema = exports.ReceivablePageSchema = exports.ReceivableRowSchema = exports.FinanceSummarySchema = exports.TodoListPageSchema = exports.TodoListQuerySchema = exports.TodoItemSchema = exports.PurchaseReportSchema = exports.TodoTypeSchema = exports.ReportSummarySchema = exports.OverviewSummarySchema = exports.ReportQuerySchema = exports.ReportRangeSchema = void 0;
 const zod_1 = require("zod");
 const common_1 = require("./common");
 const purchase_1 = require("./purchase");
@@ -30,6 +30,11 @@ exports.OverviewSummarySchema = zod_1.z.object({
     })),
     /** 近 7 个自然日（服务端 UTC 日），date 为 YYYY-MM-DD */
     trend7: zod_1.z.array(zod_1.z.object({
+        date: zod_1.z.string(),
+        amount: zod_1.z.number().int().nonnegative(),
+    })),
+    /** 近 30 个自然日（与 trend7 同口径，供概览趋势图切换） */
+    trend30: zod_1.z.array(zod_1.z.object({
         date: zod_1.z.string(),
         amount: zod_1.z.number().int().nonnegative(),
     })),
@@ -79,8 +84,54 @@ exports.ReportSummarySchema = zod_1.z.object({
         name: zod_1.z.string(),
         stock: zod_1.z.number().int().nonnegative(),
     })),
+    /**
+     * 毛利：按订单行算（销售额 = 行单价×数量，成本 = SKU 成本价×数量，只计非 cancelled 订单）。
+     * cost/gross/marginRate 为 null 表示该 SKU 未维护成本价；汇总只计已维护成本的 SKU，
+     * 全部未维护时 totalGross/marginRate 为 null；marginRate 为毛利率百分比（1 位小数）。
+     */
+    gross: zod_1.z.object({
+        totalAmount: zod_1.z.number().int().nonnegative(),
+        totalCost: zod_1.z.number().int().nonnegative(),
+        totalGross: zod_1.z.number().int().nullable(),
+        marginRate: zod_1.z.number().nullable(),
+        rows: zod_1.z.array(zod_1.z.object({
+            skuId: zod_1.z.string().uuid(),
+            code: zod_1.z.string(),
+            spec: zod_1.z.string(),
+            qty: zod_1.z.number().int().nonnegative(),
+            amount: zod_1.z.number().int().nonnegative(),
+            cost: zod_1.z.number().int().nullable(),
+            gross: zod_1.z.number().int().nullable(),
+            marginRate: zod_1.z.number().nullable(),
+        })),
+    }),
 });
 exports.TodoTypeSchema = zod_1.z.enum(['order', 'warning', 'notice', 'rma', 'transfer', 'stocktake', 'purchase', 'shipment', 'invoice']);
+/**
+ * 采购报表：按采购单创建时间分桶（与 getReport 同口径）；receivedRate 为已入库金额占比，
+ * 无采购单时为 null。supplierRanking 按采购金额降序；statusCounts 覆盖全部四种状态（含 0）。
+ */
+exports.PurchaseReportSchema = zod_1.z.object({
+    range: exports.ReportRangeSchema,
+    /** 6 个等长桶，label 为桶首日 M-D，amount 单位：分（采购单总额） */
+    buckets: zod_1.z.array(zod_1.z.object({
+        label: zod_1.z.string(),
+        amount: zod_1.z.number().int().nonnegative(),
+    })),
+    supplierRanking: zod_1.z.array(zod_1.z.object({
+        supplierId: zod_1.z.string().uuid(),
+        name: zod_1.z.string(),
+        amount: zod_1.z.number().int().nonnegative(),
+        count: zod_1.z.number().int().nonnegative(),
+    })),
+    statusCounts: zod_1.z.array(zod_1.z.object({
+        status: purchase_1.PurchaseOrderStatusSchema,
+        count: zod_1.z.number().int().nonnegative(),
+        amount: zod_1.z.number().int().nonnegative(),
+    })),
+    /** 已入库（received）金额 / 全部采购单总额，无采购单时为 null */
+    receivedRate: zod_1.z.number().nullable(),
+});
 exports.TodoItemSchema = zod_1.z.object({
     id: zod_1.z.string(),
     type: exports.TodoTypeSchema,

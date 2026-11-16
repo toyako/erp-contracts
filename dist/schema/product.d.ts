@@ -29,6 +29,17 @@ export declare const SkuSchema: z.ZodObject<{
     spec: z.ZodString;
     unit: z.ZodString;
     enabled: z.ZodBoolean;
+    /** 成本价（分）：null = 未维护，毛利算不出；售价走价格档案，成本走 SKU 档案 */
+    cost: z.ZodNullable<z.ZodObject<{
+        amount: z.ZodNumber;
+        currency: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        amount: number;
+        currency: string;
+    }, {
+        amount: number;
+        currency: string;
+    }>>;
 }, "strip", z.ZodTypeAny, {
     code: string;
     id: string;
@@ -36,6 +47,10 @@ export declare const SkuSchema: z.ZodObject<{
     spuId: string;
     spec: string;
     unit: string;
+    cost: {
+        amount: number;
+        currency: string;
+    } | null;
 }, {
     code: string;
     id: string;
@@ -43,6 +58,10 @@ export declare const SkuSchema: z.ZodObject<{
     spuId: string;
     spec: string;
     unit: string;
+    cost: {
+        amount: number;
+        currency: string;
+    } | null;
 }>;
 export type Sku = z.infer<typeof SkuSchema>;
 /** 价格由服务端维护，创建订单时客户端不得传金额 */
@@ -92,6 +111,17 @@ export declare const SkuPageSchema: z.ZodObject<{
         spec: z.ZodString;
         unit: z.ZodString;
         enabled: z.ZodBoolean;
+        /** 成本价（分）：null = 未维护，毛利算不出；售价走价格档案，成本走 SKU 档案 */
+        cost: z.ZodNullable<z.ZodObject<{
+            amount: z.ZodNumber;
+            currency: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            amount: number;
+            currency: string;
+        }, {
+            amount: number;
+            currency: string;
+        }>>;
     }, "strip", z.ZodTypeAny, {
         code: string;
         id: string;
@@ -99,6 +129,10 @@ export declare const SkuPageSchema: z.ZodObject<{
         spuId: string;
         spec: string;
         unit: string;
+        cost: {
+            amount: number;
+            currency: string;
+        } | null;
     }, {
         code: string;
         id: string;
@@ -106,6 +140,10 @@ export declare const SkuPageSchema: z.ZodObject<{
         spuId: string;
         spec: string;
         unit: string;
+        cost: {
+            amount: number;
+            currency: string;
+        } | null;
     }>, "many">;
     total: z.ZodNumber;
     page: z.ZodNumber;
@@ -120,6 +158,10 @@ export declare const SkuPageSchema: z.ZodObject<{
         spuId: string;
         spec: string;
         unit: string;
+        cost: {
+            amount: number;
+            currency: string;
+        } | null;
     }[];
     total: number;
 }, {
@@ -132,6 +174,10 @@ export declare const SkuPageSchema: z.ZodObject<{
         spuId: string;
         spec: string;
         unit: string;
+        cost: {
+            amount: number;
+            currency: string;
+        } | null;
     }[];
     total: number;
 }>;
@@ -294,18 +340,36 @@ export declare const UpdatePriceRequestSchema: z.ZodObject<{
     effectiveTo?: string | null | undefined;
 }>;
 export type UpdatePriceRequest = z.infer<typeof UpdatePriceRequestSchema>;
-/** SKU 编辑：只传要改的字段，编码与所属 SPU 不可改 */
+/** SKU 编辑：只传要改的字段，编码与所属 SPU 不可改；cost 传 null 表示清除成本价（回未维护） */
 export declare const UpdateSkuRequestSchema: z.ZodObject<{
     spec: z.ZodOptional<z.ZodString>;
     unit: z.ZodOptional<z.ZodString>;
     enabled: z.ZodOptional<z.ZodBoolean>;
+    cost: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+        amount: z.ZodNumber;
+        currency: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        amount: number;
+        currency: string;
+    }, {
+        amount: number;
+        currency: string;
+    }>>>;
 }, "strip", z.ZodTypeAny, {
     enabled?: boolean | undefined;
     spec?: string | undefined;
     unit?: string | undefined;
+    cost?: {
+        amount: number;
+        currency: string;
+    } | null | undefined;
 }, {
     enabled?: boolean | undefined;
     spec?: string | undefined;
     unit?: string | undefined;
+    cost?: {
+        amount: number;
+        currency: string;
+    } | null | undefined;
 }>;
 export type UpdateSkuRequest = z.infer<typeof UpdateSkuRequestSchema>;

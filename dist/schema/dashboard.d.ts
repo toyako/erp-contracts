@@ -45,6 +45,17 @@ export declare const OverviewSummarySchema: z.ZodObject<{
         amount: number;
         date: string;
     }>, "many">;
+    /** 近 30 个自然日（与 trend7 同口径，供概览趋势图切换） */
+    trend30: z.ZodArray<z.ZodObject<{
+        date: z.ZodString;
+        amount: z.ZodNumber;
+    }, "strip", z.ZodTypeAny, {
+        amount: number;
+        date: string;
+    }, {
+        amount: number;
+        date: string;
+    }>, "many">;
     /** 按订单行数量取前 5；SKU 缺失时 code 为 skuId 前 8 位、spec 为空串 */
     ranking: z.ZodArray<z.ZodObject<{
         skuId: z.ZodString;
@@ -108,6 +119,10 @@ export declare const OverviewSummarySchema: z.ZodObject<{
         amount: number;
         date: string;
     }[];
+    trend30: {
+        amount: number;
+        date: string;
+    }[];
     ranking: {
         code: string;
         spec: string;
@@ -137,6 +152,10 @@ export declare const OverviewSummarySchema: z.ZodObject<{
         count: number;
     }[];
     trend7: {
+        amount: number;
+        date: string;
+    }[];
+    trend30: {
         amount: number;
         date: string;
     }[];
@@ -223,6 +242,75 @@ export declare const ReportSummarySchema: z.ZodObject<{
         name: string;
         stock: number;
     }>, "many">;
+    /**
+     * 毛利：按订单行算（销售额 = 行单价×数量，成本 = SKU 成本价×数量，只计非 cancelled 订单）。
+     * cost/gross/marginRate 为 null 表示该 SKU 未维护成本价；汇总只计已维护成本的 SKU，
+     * 全部未维护时 totalGross/marginRate 为 null；marginRate 为毛利率百分比（1 位小数）。
+     */
+    gross: z.ZodObject<{
+        totalAmount: z.ZodNumber;
+        totalCost: z.ZodNumber;
+        totalGross: z.ZodNullable<z.ZodNumber>;
+        marginRate: z.ZodNullable<z.ZodNumber>;
+        rows: z.ZodArray<z.ZodObject<{
+            skuId: z.ZodString;
+            code: z.ZodString;
+            spec: z.ZodString;
+            qty: z.ZodNumber;
+            amount: z.ZodNumber;
+            cost: z.ZodNullable<z.ZodNumber>;
+            gross: z.ZodNullable<z.ZodNumber>;
+            marginRate: z.ZodNullable<z.ZodNumber>;
+        }, "strip", z.ZodTypeAny, {
+            code: string;
+            amount: number;
+            spec: string;
+            cost: number | null;
+            skuId: string;
+            qty: number;
+            gross: number | null;
+            marginRate: number | null;
+        }, {
+            code: string;
+            amount: number;
+            spec: string;
+            cost: number | null;
+            skuId: string;
+            qty: number;
+            gross: number | null;
+            marginRate: number | null;
+        }>, "many">;
+    }, "strip", z.ZodTypeAny, {
+        totalAmount: number;
+        totalCost: number;
+        totalGross: number | null;
+        marginRate: number | null;
+        rows: {
+            code: string;
+            amount: number;
+            spec: string;
+            cost: number | null;
+            skuId: string;
+            qty: number;
+            gross: number | null;
+            marginRate: number | null;
+        }[];
+    }, {
+        totalAmount: number;
+        totalCost: number;
+        totalGross: number | null;
+        marginRate: number | null;
+        rows: {
+            code: string;
+            amount: number;
+            spec: string;
+            cost: number | null;
+            skuId: string;
+            qty: number;
+            gross: number | null;
+            marginRate: number | null;
+        }[];
+    }>;
 }, "strip", z.ZodTypeAny, {
     range: "7d" | "30d" | "month";
     ranking: {
@@ -247,6 +335,22 @@ export declare const ReportSummarySchema: z.ZodObject<{
         name: string;
         stock: number;
     }[];
+    gross: {
+        totalAmount: number;
+        totalCost: number;
+        totalGross: number | null;
+        marginRate: number | null;
+        rows: {
+            code: string;
+            amount: number;
+            spec: string;
+            cost: number | null;
+            skuId: string;
+            qty: number;
+            gross: number | null;
+            marginRate: number | null;
+        }[];
+    };
 }, {
     range: "7d" | "30d" | "month";
     ranking: {
@@ -271,9 +375,111 @@ export declare const ReportSummarySchema: z.ZodObject<{
         name: string;
         stock: number;
     }[];
+    gross: {
+        totalAmount: number;
+        totalCost: number;
+        totalGross: number | null;
+        marginRate: number | null;
+        rows: {
+            code: string;
+            amount: number;
+            spec: string;
+            cost: number | null;
+            skuId: string;
+            qty: number;
+            gross: number | null;
+            marginRate: number | null;
+        }[];
+    };
 }>;
 export type ReportSummary = z.infer<typeof ReportSummarySchema>;
 export declare const TodoTypeSchema: z.ZodEnum<["order", "warning", "notice", "rma", "transfer", "stocktake", "purchase", "shipment", "invoice"]>;
+/**
+ * 采购报表：按采购单创建时间分桶（与 getReport 同口径）；receivedRate 为已入库金额占比，
+ * 无采购单时为 null。supplierRanking 按采购金额降序；statusCounts 覆盖全部四种状态（含 0）。
+ */
+export declare const PurchaseReportSchema: z.ZodObject<{
+    range: z.ZodEnum<["7d", "30d", "month"]>;
+    /** 6 个等长桶，label 为桶首日 M-D，amount 单位：分（采购单总额） */
+    buckets: z.ZodArray<z.ZodObject<{
+        label: z.ZodString;
+        amount: z.ZodNumber;
+    }, "strip", z.ZodTypeAny, {
+        amount: number;
+        label: string;
+    }, {
+        amount: number;
+        label: string;
+    }>, "many">;
+    supplierRanking: z.ZodArray<z.ZodObject<{
+        supplierId: z.ZodString;
+        name: z.ZodString;
+        amount: z.ZodNumber;
+        count: z.ZodNumber;
+    }, "strip", z.ZodTypeAny, {
+        amount: number;
+        name: string;
+        supplierId: string;
+        count: number;
+    }, {
+        amount: number;
+        name: string;
+        supplierId: string;
+        count: number;
+    }>, "many">;
+    statusCounts: z.ZodArray<z.ZodObject<{
+        status: z.ZodEnum<["draft", "submitted", "received", "cancelled"]>;
+        count: z.ZodNumber;
+        amount: z.ZodNumber;
+    }, "strip", z.ZodTypeAny, {
+        status: "received" | "draft" | "cancelled" | "submitted";
+        amount: number;
+        count: number;
+    }, {
+        status: "received" | "draft" | "cancelled" | "submitted";
+        amount: number;
+        count: number;
+    }>, "many">;
+    /** 已入库（received）金额 / 全部采购单总额，无采购单时为 null */
+    receivedRate: z.ZodNullable<z.ZodNumber>;
+}, "strip", z.ZodTypeAny, {
+    range: "7d" | "30d" | "month";
+    buckets: {
+        amount: number;
+        label: string;
+    }[];
+    supplierRanking: {
+        amount: number;
+        name: string;
+        supplierId: string;
+        count: number;
+    }[];
+    statusCounts: {
+        status: "received" | "draft" | "cancelled" | "submitted";
+        amount: number;
+        count: number;
+    }[];
+    receivedRate: number | null;
+}, {
+    range: "7d" | "30d" | "month";
+    buckets: {
+        amount: number;
+        label: string;
+    }[];
+    supplierRanking: {
+        amount: number;
+        name: string;
+        supplierId: string;
+        count: number;
+    }[];
+    statusCounts: {
+        status: "received" | "draft" | "cancelled" | "submitted";
+        amount: number;
+        count: number;
+    }[];
+    receivedRate: number | null;
+}>;
+export type PurchaseReport = z.infer<typeof PurchaseReportSchema>;
 export type TodoType = z.infer<typeof TodoTypeSchema>;
 export declare const TodoItemSchema: z.ZodObject<{
     id: z.ZodString;

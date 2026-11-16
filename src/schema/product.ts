@@ -18,6 +18,8 @@ export const SkuSchema = z.object({
   spec: z.string().max(256),
   unit: z.string().min(1).max(32),
   enabled: z.boolean(),
+  /** 成本价（分）：null = 未维护，毛利算不出；售价走价格档案，成本走 SKU 档案 */
+  cost: MoneySchema.nullable(),
 });
 export type Sku = z.infer<typeof SkuSchema>;
 
@@ -76,10 +78,11 @@ export const UpdatePriceRequestSchema = z.object({
 });
 export type UpdatePriceRequest = z.infer<typeof UpdatePriceRequestSchema>;
 
-/** SKU 编辑：只传要改的字段，编码与所属 SPU 不可改 */
+/** SKU 编辑：只传要改的字段，编码与所属 SPU 不可改；cost 传 null 表示清除成本价（回未维护） */
 export const UpdateSkuRequestSchema = z.object({
   spec: z.string().max(256).optional(),
   unit: z.string().min(1).max(32).optional(),
   enabled: z.boolean().optional(),
+  cost: MoneySchema.nullable().optional(),
 });
 export type UpdateSkuRequest = z.infer<typeof UpdateSkuRequestSchema>;
